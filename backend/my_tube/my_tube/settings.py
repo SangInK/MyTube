@@ -10,10 +10,21 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# BASE_BACKEND_URL : Backend 서버 url
+# 개발중 https 연결을 위해 ngrok 사용
+BASE_BACKEND_URL = os.getenv(
+    "BASE_BACKEND_URL", "https://liberal-chigger-blindly.ngrok-free.app/"
+)
+
+# backend서버를 사용할 client 측 프로그램의 url
+# 개발중 react localhost 사용
+CLIENT_ORIGIN = "http://localhost:3000"
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +36,10 @@ SECRET_KEY = "django-insecure-9mkkl0y0^7@^6hr0-6keckpp)y%0dzq1k6=#nae^_)3r5t_lt+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    # 개발중 https 연결을 위해 ngrok 사용
+    "liberal-chigger-blindly.ngrok-free.app",
+]
 
 
 # Application definition
@@ -37,7 +51,26 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
 ]
+
+# CORS 설정
+#  Access-Control-Allow-Credentials 설정
+CORS_ALLOW_CREDENTIALS = True
+
+#  설정 중 특정 출처에 대한 허용 여부
+CORS_ALLOWED_ORIGINS = [
+    # "http://localhost:3000", # 개발 react url
+    "https://front.sai6272.shop"
+]
+
+# CSRF 설정
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "None"
+
+# Session Cookie 보안 설정
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -103,11 +136,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ko-kr"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 
+# Django의 애플리케이션에서 다국어 지원을 활성화
 USE_I18N = True
+
+# Django의 지역화된 문자열을 사용하여 애플리케이션의 다국어 지원을 활성화
+USE_L10N = True
 
 USE_TZ = True
 
