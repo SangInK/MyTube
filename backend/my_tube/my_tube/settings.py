@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "google_oauth",
+    "subs_folder",
 ]
 
 # CORS 설정
