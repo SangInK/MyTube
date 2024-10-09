@@ -2,7 +2,6 @@ import json
 import os
 
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 
 import google_auth_oauthlib.flow
 
@@ -32,32 +31,14 @@ class FlowService:
         client_secret.json에 저장된 google api 관련 정보를 FlowService에 설정
         """
 
-        file_path = os.path.join(os.path.dirname(__file__), "client_secret.json")
-
-        with open(file_path, "r") as file:
-            data = json.load(file)
-
-        data = data.get(self.GOOGLE_CLIENT_TYPE, {})
-
-        if not data.get("client_id"):
-            raise ImproperlyConfigured("GOOGLE_OAUTH2_CLIENT_ID missing in settings.")
-
-        if not data.get("client_secret"):
-            raise ImproperlyConfigured(
-                "GOOGLE_OAUTH2_CLIENT_SECRET missing in settings."
-            )
-
-        if not data.get("project_id"):
-            raise ImproperlyConfigured("GOOGLE_OAUTH2_PROJECT_ID missing in settings.")
-
         self.config = {
             self.GOOGLE_CLIENT_TYPE: {
-                "client_id": data.get("client_id", ""),
-                "client_secret": data.get("client_secret", ""),
-                "project_id": data.get("project_id", ""),
-                "auth_uri": data.get("auth_uri", ""),
-                "token_uri": data.get("token_uri", ""),
-                "auth_provider_x509_cert_url": data.get(
+                "client_id": os.getenv("client_id", ""),
+                "client_secret": os.getenv("client_secret", ""),
+                "project_id": os.getenv("project_id", ""),
+                "auth_uri": os.getenv("auth_uri", ""),
+                "token_uri": os.getenv("token_uri", ""),
+                "auth_provider_x509_cert_url": os.getenv(
                     "auth_provider_x509_cert_url", ""
                 ),
                 "redirect_uris": [f"{settings.BASE_BACKEND_URL}{self.API_URI}"],
