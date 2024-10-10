@@ -108,6 +108,137 @@
 
 ---
 
+## 2. Subscription and Folder API
+
+### 2.1. Get Folders
+
+- **URL**: `/folders/`
+- **Method**: `GET`
+- **Description**: Google 인증된 사용자가 생성한 폴더 목록을 반환합니다.
+- **Response**:
+    - **Status Code**: `200 OK`
+    - **Response Body**:
+      ```json
+      [
+          {
+              "id": 1,
+              "name": "string",
+              "google_user": "string"
+          },
+          // More folder objects
+      ]
+      ```
+
+---
+
+### 2.2. Create Folder
+
+- **URL**: `/folders/`
+- **Method**: `POST`
+- **Description**: 새로운 폴더를 생성합니다.
+- **Request Body**:
+    - **google_user**: Google 사용자 ID
+    - **name**: 폴더 이름
+- **Response**:
+    - **Status Code**: `201 Created`
+    - **Response Body**:
+      ```json
+      {
+          "id": 1,
+          "name": "string",
+          "google_user": "string"
+      }
+      ```
+
+---
+
+### 2.3. Delete Folder
+
+- **URL**: `/folder/<int:pk>/`
+- **Method**: `DELETE`
+- **Description**: 지정된 폴더를 삭제합니다.
+- **Response**:
+    - **Status Code**: `200 OK`
+    - **Response Body**:
+      ```json
+      {
+          "isOk": true
+      }
+      ```
+
+---
+
+### 2.4. Get Subscriptions
+
+- **URL**: `/<int:pk>/<str:nextToken>/`
+- **Method**: `GET`
+- **Description**: 유저의 구독중인 YouTube 채널을 조회합니다. `nextToken` 값이 있을 경우, 다음 페이지의 채널을 조회합니다.
+- **Response**:
+    - **Status Code**: `200 OK`
+    - **Response Body**:
+      ```json
+      {
+          "pageInfo": {
+              "totalResults": 100,
+              "nextPageToken": "string"
+          },
+          "items": [
+              {
+                  "subs_id": "channel_id",
+                  "title": "string",
+                  "description": "string",
+                  "thumbnails": "thumbnail_url"
+              },
+              // More subscription objects
+          ]
+      }
+      ```
+
+---
+
+### 2.5. Add Subscriptions to Folder
+
+- **URL**: `/<int:pk>/<str:nextToken>/`
+- **Method**: `POST`
+- **Description**: 폴더에 구독 채널을 추가합니다.
+- **Request Body**:
+    - **folder**: 폴더 정보
+    - **items**: 구독 채널 정보
+- **Response**:
+    - **Status Code**: `200 OK`
+    - **Response Body**:
+      ```json
+      {
+          "isOk": true,
+          "subs": [
+              {
+                  "subs_id": "channel_id",
+                  "title": "string",
+                  "description": "string",
+                  "thumbnails": "thumbnail_url"
+              },
+              // More subscription objects
+          ]
+      }
+      ```
+
+---
+
+### 2.6. Delete Subscriptions from Folder
+
+- **URL**: `/<int:pk>/<str:nextToken>/`
+- **Method**: `DELETE`
+- **Description**: 폴더에서 지정된 구독 채널을 삭제합니다.
+- **Response**:
+    - **Status Code**: `200 OK`
+    - **Response Body**:
+      ```json
+      {
+          "isOk": true
+      }
+      ```
+
+
 ## Error Responses
 
 - **400 Bad Request**: 잘못된 요청 데이터
