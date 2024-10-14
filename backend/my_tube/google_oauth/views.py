@@ -95,8 +95,51 @@ class google_oauth(APIView):
 
         try:
             if "user_token" in request.COOKIES:
-                # TODO 이미 인증이 완료된 사용자라면 DB에서 해당 사용자의 정보를 조회 후 반환
-                pass
+                user = UserService(user_token=request.COOKIES["user_token"])
+
+                if user.is_valid():
+                    if user.check_expires():
+                        user.update_user(
+                            user_state=True,
+                            expires_at=datetime.now() + timedelta(days=1),
+                        )
+
+                        google_user = GoogleUserService(id=user.data["google_user"])
+                        flow = FlowService()
+
+                        credentials = CredentialsService(
+                            {
+                                "token": google_user.data["access_token"],
+                                "refresh_token": google_user.data["refresh_token"],
+                                "client_id": flow.config["web"]["client_id"],
+                                "client_secret": flow.config["web"]["client_secret"],
+                                "token_uri": flow.config["web"]["token_uri"],
+                                "scopes": flow.SCOPES,
+                            }
+                        )
+
+                        request.session["credentials"] = (
+                            credentials.credentials_to_dict()
+                        )
+
+                        credentials.set_google_user(credentials.credentials.token)
+                        response.data = {
+                            "user": credentials.google_user.get_google_user()
+                        }
+                        response.status_code = status.HTTP_200_OK
+
+                    else:
+                        user.delete_user()
+
+                        response = _delete_cookie(response)
+
+                        # TODO redirect 처리 필요
+                else:
+                    response = _delete_cookie(response)
+
+                    # TODO redirect 처리 필요
+
+                return response
             else:
                 # Google Flow 객체 생성
                 flow = FlowService()
