@@ -37,7 +37,6 @@ SECRET_KEY = "django-insecure-9mkkl0y0^7@^6hr0-6keckpp)y%0dzq1k6=#nae^_)3r5t_lt+
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "127.0.0.1",
     # 개발중 https 연결을 위해 ngrok 사용
     "liberal-chigger-blindly.ngrok-free.app",
 ]
@@ -64,9 +63,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 #  설정 중 특정 출처에 대한 허용 여부
 CORS_ALLOWED_ORIGINS = [
-    # "http://localhost:3000", # 개발 react url
     "https://front.sai6272.shop",
-    "https://liberal-chigger-blindly.ngrok-free.app",
+    "http://localhost:3000",  # 개발 react url
 ]
 
 # CSRF 설정
@@ -81,6 +79,7 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
